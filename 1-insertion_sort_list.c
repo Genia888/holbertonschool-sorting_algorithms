@@ -2,50 +2,34 @@
 #include <stddef.h>
 
 /**
- * SortList
- * @pList: list to sort
- *
- * Return: List sort
- */
-listint_t *SortList(listint_t *pList)
-{
-	listint_t *current;
-	listint_t *head = NULL;
-
-	if (pList == NULL || pList->next == NULL)
-		return (pList);
-	while (pList != NULL) 
-	{
-		print_list(head);
-		current = pList;
-		pList = pList->next;
-		if (head == NULL || current->n < head->n)
-		{
-			current->next = head;
-			head = current;
-		} 
-		else 
-		{
-			listint_t *p = head;
-			while (p != NULL) {
-				if (p->next == NULL || 
-						current->n < p->next->n) 
-				{
-					current->next = p->next;
-					p->next = current;
-					break; 
-				}
-				p = p->next;
-			}
-		}
-	}
-	return head;
-}
-/** 
  * insertion_sort_list - tri in insert mode
  *@list : list chain
  */
 void insertion_sort_list(listint_t **list)
 {
-	*list = SortList(*list);
+	listint_t *current, *next, *temp;
+
+	if (list == NULL || (*list)->next == NULL)
+		return;
+	current = (*list)->next;
+	while (current != NULL)
+	{
+		next = current->next;
+		while (current->prev != NULL && current->n < current->prev->n)
+		{
+			temp = current->prev;
+			temp->next = current->next;
+			if (current->next != NULL)
+				current->next->prev = temp;
+			current->prev = temp->prev;
+			current->next = temp;
+			if (temp->prev != NULL)
+				temp->prev->next = current;
+			else
+				*list = current;
+			temp->prev = current;
+			print_list(*list);
+		}
+		current = next;
+	}
 }
